@@ -1,7 +1,7 @@
 function Login() {
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+    window.open("https://campus-air.onrender.com/auth/google", "_self");
   };
 
   return (
