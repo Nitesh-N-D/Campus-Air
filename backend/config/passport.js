@@ -9,9 +9,9 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
-  process.env.NODE_ENV === "production"
-    ? "https://campus-air.onrender.com/auth/google/callback"
-    : "http://localhost:5000/auth/google/callback"
+        process.env.NODE_ENV === "production"
+          ? "https://campus-air.onrender.com/auth/google/callback"
+          : "http://localhost:5000/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
 
@@ -25,10 +25,14 @@ passport.use(
 
           const email = profile.emails[0].value;
 
-          const role =
-            email === "niteshdwaraka@gmail.com"
-              ? "admin"
-              : "student";
+          const adminEmails = [
+            "niteshdwaraka@gmail.com",
+            "niteshnd2006@gmail.com"
+          ];
+
+          const role = adminEmails.includes(email)
+            ? "admin"
+            : "student";
 
           user = await User.create({
             googleId: profile.id,
