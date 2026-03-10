@@ -12,13 +12,13 @@ router.get(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect(process.env.CLIENT_URL + "/dashboard");
   }
 );
 
 router.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("http://localhost:5173");
+     res.redirect(process.env.CLIENT_URL);
   });
 });
 router.get("/current_user", (req, res) => {
