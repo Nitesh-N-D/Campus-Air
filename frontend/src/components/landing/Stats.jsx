@@ -16,7 +16,7 @@ function Stats() {
         <div>
           <h2 className="text-5xl font-bold text-blue-600">
 
-            {inView && <CountUp end={1200} duration={2} />}+
+            {inView && <CountUp end={100} duration={2} />}+
 
           </h2>
 
