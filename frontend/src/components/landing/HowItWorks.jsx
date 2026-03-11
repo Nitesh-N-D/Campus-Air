@@ -1,64 +1,68 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Bell, Calendar, Upload, Mail } from "lucide-react";
+import { Calendar, Bell, CheckCircle } from "lucide-react"
 
-const features = [
+const steps = [
   {
     icon: Calendar,
-    title: "Event Management",
-    desc: "Admins can create and manage campus events easily."
+    title: "Admin Posts Event",
+    desc: "Admins create campus events and announcements."
   },
   {
     icon: Bell,
-    title: "Real-Time Notifications",
-    desc: "Students instantly receive updates via notifications."
+    title: "Students Receive Notification",
+    desc: "Real-time alerts are delivered instantly."
   },
   {
-    icon: Mail,
-    title: "Email Alerts",
-    desc: "Important announcements are automatically emailed."
-  },
-  {
-    icon: Upload,
-    title: "CSV Student Import",
-    desc: "Upload and manage student lists quickly."
+    icon: CheckCircle,
+    title: "Stay Updated",
+    desc: "Students never miss important campus updates."
   }
-];
+]
 
-function Features() {
+function HowItWorks() {
 
   return (
-    <section id="features" className="py-24 bg-white">
+    <section id="how" className="py-28 bg-white">
 
       <h2 className="text-4xl font-bold text-center mb-16">
-        Powerful Features
+        How Campus Air Works
       </h2>
 
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-6">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 text-center">
 
-        {features.map((f, i) => (
-          <Card key={i} className="hover:shadow-xl transition">
+        {steps.map((step,i)=>{
 
-            <CardContent className="p-6 text-center">
+          const Icon = step.icon
 
-              <f.icon className="mx-auto mb-4 text-blue-600" size={32} />
+          return(
 
-              <h3 className="font-semibold mb-2">
-                {f.title}
+            <div
+              key={i}
+              className="p-6 rounded-xl hover:shadow-lg transition"
+            >
+
+              <Icon
+                className="mx-auto text-blue-600 mb-4"
+                size={36}
+              />
+
+              <h3 className="font-semibold text-lg mb-2">
+                {step.title}
               </h3>
 
               <p className="text-gray-600 text-sm">
-                {f.desc}
+                {step.desc}
               </p>
 
-            </CardContent>
+            </div>
 
-          </Card>
-        ))}
+          )
+
+        })}
 
       </div>
 
     </section>
-  );
+  )
 }
 
-export default Features;
+export default HowItWorks;

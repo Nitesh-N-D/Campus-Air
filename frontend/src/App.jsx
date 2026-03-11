@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -15,6 +15,40 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import socket from "./services/socket";
+
+/* ---------- Custom Cursor ---------- */
+
+function Cursor() {
+
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+
+    const move = (e) => {
+      setPos({
+        x: e.clientX,
+        y: e.clientY
+      });
+    };
+
+    window.addEventListener("mousemove", move);
+
+    return () => window.removeEventListener("mousemove", move);
+
+  }, []);
+
+  return (
+    <div
+      style={{
+        left: pos.x,
+        top: pos.y
+      }}
+      className="fixed w-6 h-6 rounded-full bg-blue-500/30 blur-md pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2"
+    />
+  );
+}
+
+/* ---------- App ---------- */
 
 function App() {
 
@@ -37,6 +71,10 @@ function App() {
 
   return (
     <>
+
+      {/* Custom Cursor */}
+      <Cursor />
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -52,6 +90,7 @@ function App() {
       </Routes>
 
       <ToastContainer position="top-right" autoClose={4000} />
+
     </>
   );
 }

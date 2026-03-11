@@ -1,27 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-
-function CTA() {
+function Footer() {
 
   return (
-    <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
+    <footer className="py-10 text-center bg-gray-100">
 
-      <h2 className="text-4xl font-bold mb-6">
-        Join Campus Air Today
-      </h2>
+      <h3 className="font-bold mb-2">
+        Campus Air
+      </h3>
 
-      <p className="mb-8">
-        A smarter way to stay connected with campus activities.
+      <p className="text-gray-600 text-sm">
+        © 2026 Campus Air — College Information Portal
       </p>
 
-      <Link to="/login">
-        <Button size="lg" variant="secondary">
-          Login with Google
-        </Button>
-      </Link>
-
-    </section>
+    </footer>
   );
 }
 
-export default CTA;
+export default Footer;

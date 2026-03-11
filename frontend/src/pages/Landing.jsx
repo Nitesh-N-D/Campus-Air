@@ -4,18 +4,19 @@ import Features from "../components/landing/Features";
 import HowItWorks from "../components/landing/HowItWorks";
 import CTA from "../components/landing/CTA";
 import Footer from "../components/landing/Footer";
-import EventPreview from "../components/landing/EventPreview";
+import EventShowcase from "../components/landing/EventShowcase"
+import Stats from "../components/landing/Stats"
 function Landing() {
 
   return (
     <div>
 
       <Navbar />
-
+     
       <Hero />
-
+      <Stats />
       <Features />
-      <EventPreview />  
+      <EventShowcase /> 
       <HowItWorks />
 
       <CTA />

@@ -1,45 +1,27 @@
-function HowItWorks() {
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+
+function CTA() {
 
   return (
-    <section id="how" className="py-24 bg-blue-50 text-center">
+    <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
 
-      <h2 className="text-4xl font-bold mb-16">
-        How Campus Air Works
+      <h2 className="text-4xl font-bold mb-6">
+        Join Campus Air Today
       </h2>
 
-      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-10">
+      <p className="mb-8">
+        A smarter way to stay connected with campus activities.
+      </p>
 
-        <div>
-          <h3 className="text-xl font-semibold mb-2">
-            Admin Posts Event
-          </h3>
-          <p className="text-gray-600">
-            Admin logs in and creates campus announcements or events.
-          </p>
-        </div>
-
-        <div>
-          <h3 className="text-xl font-semibold mb-2">
-            Students Receive Notification
-          </h3>
-          <p className="text-gray-600">
-            Real-time alerts and notifications are sent instantly.
-          </p>
-        </div>
-
-        <div>
-          <h3 className="text-xl font-semibold mb-2">
-            Stay Updated
-          </h3>
-          <p className="text-gray-600">
-            Students never miss important updates from the campus.
-          </p>
-        </div>
-
-      </div>
+      <Link to="/login">
+        <Button size="lg" variant="secondary">
+          Login with Google
+        </Button>
+      </Link>
 
     </section>
   );
 }
 
-export default HowItWorks;
+export default CTA;
