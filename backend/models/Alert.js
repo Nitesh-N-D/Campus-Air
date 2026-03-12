@@ -11,7 +11,7 @@ const alertSchema = new mongoose.Schema({
     enum: ["High","Medium","Low"],
     default: "Low"
   },
-
+ expiresAt: Date,
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"

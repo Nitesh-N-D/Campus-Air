@@ -6,7 +6,7 @@ function CreateAlert(){
   const [title,setTitle] = useState("");
   const [message,setMessage] = useState("");
   const [priority,setPriority] = useState("Low");
-  
+  const [expiresAt,setExpiresAt] = useState("");
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -14,7 +14,8 @@ function CreateAlert(){
   await API.post("/alerts",{
   title,
   message,
-  priority
+  priority,
+  expiresAt
 });
 
 alert("Alert created");
@@ -53,6 +54,11 @@ navigate("/dashboard");
           <option>Low</option>
         </select>
 
+        <input
+  type="datetime-local"
+  className="border p-2 w-full"
+  onChange={(e)=>setExpiresAt(e.target.value)}
+/> 
         <button className="bg-red-600 text-white px-6 py-2 rounded">
           Send Alert
         </button>

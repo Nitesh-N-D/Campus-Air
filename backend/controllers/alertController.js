@@ -4,12 +4,13 @@ const Notification = require("../models/Notification");
 exports.createAlert = async (req, res) => {
   try {
 
-    const { title, message, priority } = req.body;
+    const { title, message, priority,expiresAt } = req.body;
 
     const alert = new Alert({
       title,
       message,
       priority,
+      expiresAt,
       createdBy: req.user ? req.user._id : undefined
     });
 
@@ -40,9 +41,14 @@ exports.createAlert = async (req, res) => {
 
 exports.getAlerts = async (req, res) => {
 
-  const alerts = await Alert
-    .find()
-    .sort({ createdAt: -1 });
+  const now = new Date();
+
+  const alerts = await Alert.find({
+    $or: [
+      { expiresAt: { $exists: false } },
+      { expiresAt: { $gt: now } }
+    ]
+  }).sort({ createdAt: -1 });
 
   res.json(alerts);
 
