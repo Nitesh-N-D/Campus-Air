@@ -1,24 +1,25 @@
 import { useState } from "react";
 import API from "../services/api";
-
+import { useNavigate } from "react-router-dom";
 function CreateAlert(){
-
+  const navigate = useNavigate();
   const [title,setTitle] = useState("");
   const [message,setMessage] = useState("");
   const [priority,setPriority] = useState("Low");
-
+  
   const handleSubmit = async (e) => {
 
     e.preventDefault();
 
-    await API.post("/alerts",{
-      title,
-      message,
-      priority
-    });
+  await API.post("/alerts",{
+  title,
+  message,
+  priority
+});
 
-    alert("Alert created");
+alert("Alert created");
 
+navigate("/dashboard");
   };
 
   return(

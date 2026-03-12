@@ -2,7 +2,6 @@ const Alert = require("../models/Alert");
 const Notification = require("../models/Notification");
 
 exports.createAlert = async (req, res) => {
-
   try {
 
     const { title, message, priority } = req.body;
@@ -11,16 +10,21 @@ exports.createAlert = async (req, res) => {
       title,
       message,
       priority,
-      createdBy: req.user ? req.user._id : null
+      createdBy: req.user ? req.user._id : undefined
     });
 
     await alert.save();
 
-    await Notification.create({
-      title,
-      message,
-      type: "alert"
-    });
+    // create notification safely
+    try {
+      await Notification.create({
+        title,
+        message,
+        type: "alert"
+      });
+    } catch (err) {
+      console.log("Notification creation failed:", err.message);
+    }
 
     if (global.io) {
       global.io.emit("newAlert", alert);
@@ -29,12 +33,9 @@ exports.createAlert = async (req, res) => {
     res.status(201).json(alert);
 
   } catch (error) {
-
-    console.error(error);
+    console.error("Create Alert Error:", error);
     res.status(500).json({ message: "Error creating alert" });
-
   }
-
 };
 
 exports.getAlerts = async (req, res) => {

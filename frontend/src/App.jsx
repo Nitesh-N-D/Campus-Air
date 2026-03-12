@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateEvent from "./pages/CreateEvent";
 import Events from "./pages/Events";
 import CreateAnnouncement from "./pages/CreateAnnouncement";
+import CreateAlert from "./pages/CreateAlert";
 import Announcements from "./pages/Announcements";
 import UploadStudents from "./pages/UploadStudents";
 import Students from "./pages/Students";
@@ -13,7 +14,7 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import EventCalendar from "./pages/EventCalendar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import AlertBanner from "./components/AlertBanner";
 import socket from "./services/socket";
 
 /* ---------- Custom Cursor ---------- */
@@ -74,7 +75,7 @@ function App() {
 
       {/* Custom Cursor */}
       <Cursor />
-
+        <AlertBanner />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -83,6 +84,7 @@ function App() {
         <Route path="/upload-students" element={<UploadStudents />} />
         <Route path="/events" element={<Events />} />
         <Route path="/create-announcement" element={<CreateAnnouncement />} />
+        <Route path="/create-alert" element={<CreateAlert />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/students" element={<Students />} />
         <Route path="/analytics" element={<AdminAnalytics />} />
