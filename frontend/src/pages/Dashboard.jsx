@@ -16,7 +16,7 @@ function Dashboard() {
 
   return (
     <div className="p-10">
- 
+      <AlertBanner />
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
 

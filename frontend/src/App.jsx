@@ -75,7 +75,7 @@ function App() {
 
       {/* Custom Cursor */}
       <Cursor />
-        <AlertBanner />
+        <div className="pt-12">
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -90,7 +90,7 @@ function App() {
         <Route path="/analytics" element={<AdminAnalytics />} />
         <Route path="/calendar" element={<EventCalendar />} />
       </Routes>
-
+</div>
       <ToastContainer position="top-right" autoClose={4000} />
 
     </>
