@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { X } from "lucide-react";
-
+import socket from "../services/socket";
 function AlertBanner(){
 
   const [alert,setAlert] = useState(null);
@@ -28,6 +28,14 @@ function AlertBanner(){
       });
 
   },[]);
+  socket.on("newAlert", (data) => {
+
+  if(data.priority === "High"){
+    setAlert(data);
+    setVisible(true);
+  }
+
+});
 
   // auto hide after 10 seconds
   useEffect(()=>{
