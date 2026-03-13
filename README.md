@@ -210,10 +210,12 @@ Add keys in `.env`.
 ## Dashboard
 
 Modern admin dashboard with analytics and actions.
+<img width="1763" height="2049" alt="image" src="https://github.com/user-attachments/assets/7d5f66dc-bc58-45e0-88ae-30e3d6e64f7a" />
 
 ## Landing Page
 
 Interactive landing page with animations and event preview.
+<img width="1763" height="4167" alt="image" src="https://github.com/user-attachments/assets/65cbcc2a-402c-4788-9230-939845bb28e4" />
 
 ------------------------------------------------------------------------
 
