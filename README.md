@@ -206,6 +206,11 @@ npm run dev
 Add keys in `.env`.
 
 ------------------------------------------------------------------------
+# Visual Overview
+
+<img width="937" height="701" alt="image" src="https://github.com/user-attachments/assets/f58d2aec-ccd7-420d-83ac-89796dae480d" />
+
+------------------------------------------------------------------------
 
 # 📸 Screenshots
 
