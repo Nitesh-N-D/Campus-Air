@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { motion } from "framer-motion";
 
 const events = [
   {
@@ -32,11 +31,7 @@ function EventPreview() {
 
         {events.map((event, i) => (
 
-          <motion.div
-            key={i}
-            whileHover={{ scale: 1.05 }}
-          >
-
+          <div key={i}>
             <Card className="p-6 shadow-lg">
 
               <h3 className="font-semibold text-lg mb-2">
@@ -52,8 +47,7 @@ function EventPreview() {
               </p>
 
             </Card>
-
-          </motion.div>
+          </div>
 
         ))}
 

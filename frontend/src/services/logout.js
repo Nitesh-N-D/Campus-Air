@@ -1,6 +1,7 @@
 import API from "./api";
 
 export async function logoutUser() {
-  await API.post("/auth/logout");
+  localStorage.removeItem("campus_air_token");
+  await API.post("/auth/logout").catch(() => null);
   window.location.assign("/");
 }

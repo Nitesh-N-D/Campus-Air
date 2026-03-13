@@ -1,5 +1,15 @@
 const router = require("express").Router();
 const passport = require("passport");
+const authMiddleware = require("../middleware/authMiddleware");
+const {
+  signup,
+  login,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  getCurrentUser,
+} = require("../controllers/authController");
+
 const isProduction = process.env.NODE_ENV === "production";
 const clientUrl =
   process.env.CLIENT_URL ||
@@ -25,13 +35,19 @@ function handleLogout(req, res, next) {
       res.clearCookie("connect.sid", {
         httpOnly: true,
         sameSite: isProduction ? "none" : "lax",
-        secure: isProduction
+        secure: isProduction,
       });
 
       return res.status(200).json({ success: true });
     });
   });
 }
+
+router.post("/signup", signup);
+router.post("/login", login);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
+router.get("/verify-email", verifyEmail);
 
 router.get(
   "/google",
@@ -41,18 +57,15 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-     failureRedirect: clientUrl + "/login",
+    failureRedirect: `${clientUrl}/login`,
   }),
   (req, res) => {
-    res.redirect(clientUrl + "/dashboard");
+    res.redirect(`${clientUrl}/dashboard`);
   }
 );
 
 router.get("/logout", handleLogout);
 router.post("/logout", handleLogout);
-
-router.get("/current_user", (req, res) => {
-  res.send(req.user);
-});
+router.get("/current_user", authMiddleware, getCurrentUser);
 
 module.exports = router;

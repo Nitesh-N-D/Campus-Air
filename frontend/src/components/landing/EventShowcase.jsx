@@ -1,95 +1,58 @@
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay } from "swiper/modules"
-import { motion } from "framer-motion"
-import "swiper/css"
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
 
 const events = [
-  {
-    title: "AI Hackathon",
-    date: "March 25",
-    location: "Auditorium",
-    color: "from-blue-500 to-indigo-600"
-  },
-  {
-    title: "Tech Symposium",
-    date: "April 2",
-    location: "Main Hall",
-    color: "from-purple-500 to-pink-500"
-  },
-  {
-    title: "Placement Workshop",
-    date: "April 10",
-    location: "Seminar Hall",
-    color: "from-green-500 to-emerald-600"
-  },
-  {
-    title: "Startup Pitch Day",
-    date: "April 18",
-    location: "Innovation Hub",
-    color: "from-orange-500 to-red-500"
-  }
-]
+  { title: "AI Hackathon", date: "March 25", location: "Auditorium", accent: "bg-teal-700" },
+  { title: "Tech Symposium", date: "April 2", location: "Main Hall", accent: "bg-slate-900" },
+  { title: "Placement Workshop", date: "April 10", location: "Seminar Hall", accent: "bg-amber-500" },
+  { title: "Startup Pitch Day", date: "April 18", location: "Innovation Hub", accent: "bg-emerald-700" },
+];
 
 function EventShowcase() {
-
   return (
-    <section className="py-28 bg-gradient-to-b from-white to-gray-50">
-
-      <h2 className="text-4xl font-bold text-center mb-16">
-        Upcoming Campus Events
-      </h2>
-
-      <div className="max-w-6xl mx-auto">
+    <section className="px-6 py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+              Showcase
+            </p>
+            <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
+              Upcoming campus moments
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-7 text-slate-500">
+            A more editorial preview of what students can expect next, with strong contrast and cleaner content blocks.
+          </p>
+        </div>
 
         <Swiper
           modules={[Autoplay]}
-          autoplay={{ delay: 3000 }}
-          spaceBetween={30}
+          autoplay={{ delay: 3200 }}
+          spaceBetween={24}
           slidesPerView={1}
           breakpoints={{
             768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 }
+            1200: { slidesPerView: 3 },
           }}
         >
-
-          {events.map((event, i) => (
-
-            <SwiperSlide key={i}>
-
-              <motion.div
-                whileHover={{ scale:1.05, rotateX:5, rotateY:-5 }}
-                transition={{ duration:0.3 }}
-                className={`
-                p-8 rounded-2xl text-white shadow-xl
-                bg-gradient-to-r ${event.color}
-                cursor-pointer
-                `}
-              >
-
-                <h3 className="text-xl font-semibold mb-2">
-                  {event.title}
-                </h3>
-
-                <p className="text-sm opacity-90">
-                  {event.date}
-                </p>
-
-                <p className="text-sm opacity-90">
-                  {event.location}
-                </p>
-
-              </motion.div>
-
+          {events.map((event) => (
+            <SwiperSlide key={event.title}>
+              <article className="rounded-[30px] border border-white/70 bg-white/84 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+                <div className={`h-2 w-24 rounded-full ${event.accent}`} />
+                <h3 className="mt-6 text-2xl font-semibold text-slate-900">{event.title}</h3>
+                <div className="mt-6 space-y-2 text-sm text-slate-500">
+                  <p>{event.date}</p>
+                  <p>{event.location}</p>
+                </div>
+              </article>
             </SwiperSlide>
-
           ))}
-
         </Swiper>
-
       </div>
-
     </section>
-  )
+  );
 }
 
 export default EventShowcase;

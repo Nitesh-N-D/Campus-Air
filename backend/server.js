@@ -22,8 +22,8 @@ const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://campus-air.vercel.app"
-];
+  process.env.CLIENT_URL
+].filter(Boolean);
 
 connectDB();
 

@@ -1,97 +1,65 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Bell, Calendar, Upload, Mail } from "lucide-react"
-import { motion } from "framer-motion"
+import { Card, CardContent } from "@/components/ui/card";
+import { Bell, Calendar, Mail, Upload } from "lucide-react";
 
 const features = [
   {
     icon: Calendar,
     title: "Event Management",
-    desc: "Admins can create and manage campus events easily."
+    desc: "Create event listings with stronger hierarchy, cleaner details, and better readability.",
   },
   {
     icon: Bell,
     title: "Real-Time Notifications",
-    desc: "Students instantly receive updates via notifications."
+    desc: "Push updates instantly without making the interface feel busy or overwhelming.",
   },
   {
     icon: Mail,
-    title: "Email Alerts",
-    desc: "Important announcements are automatically emailed."
+    title: "Email Escalation",
+    desc: "Promote the messages that matter most with optional outreach to every student.",
   },
   {
     icon: Upload,
-    title: "CSV Student Import",
-    desc: "Upload and manage student lists quickly."
-  }
-]
+    title: "Student Import",
+    desc: "Keep the directory current with simple CSV-based syncing and management.",
+  },
+];
 
 function Features() {
-
   return (
-    <section
-      id="features"
-      className="py-28 relative bg-gradient-to-b from-white to-gray-50"
-    >
+    <section id="features" className="px-6 py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-14 max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+            Features
+          </p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
+            Powerful, but restrained.
+          </h2>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            The platform is designed to feel premium through clarity, hierarchy, and consistency rather than visual excess.
+          </p>
+        </div>
 
-      <motion.h2
-        initial={{ opacity:0, y:30 }}
-        whileInView={{ opacity:1, y:0 }}
-        transition={{ duration:0.6 }}
-        viewport={{ once:true }}
-        className="text-4xl font-bold text-center mb-16"
-      >
-        Powerful Features
-      </motion.h2>
-
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
-
-        {features.map((f, i) => (
-
-          <motion.div
-            key={i}
-            initial={{ opacity:0, y:40 }}
-            whileInView={{ opacity:1, y:0 }}
-            transition={{ duration:0.5, delay:i*0.1 }}
-            viewport={{ once:true }}
-          >
-
-            <Card className="
-            backdrop-blur-xl
-            bg-white/60
-            border border-white/20
-            shadow-lg
-            hover:shadow-2xl
-            hover:-translate-y-2
-            transition duration-300
-            ">
-
-              <CardContent className="p-8 text-center">
-
-                <f.icon
-                  className="mx-auto mb-4 text-blue-600"
-                  size={34}
-                />
-
-                <h3 className="font-semibold text-lg mb-2">
-                  {f.title}
-                </h3>
-
-                <p className="text-gray-600 text-sm">
-                  {f.desc}
-                </p>
-
-              </CardContent>
-
-            </Card>
-
-          </motion.div>
-
-        ))}
-
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+            >
+              <Card className="h-full rounded-[28px] border border-white/70 bg-white/82 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+                <CardContent className="p-6">
+                  <div className="mb-5 inline-flex rounded-2xl bg-teal-50 p-3 text-teal-700">
+                    <feature.icon size={22} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-900">{feature.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-500">{feature.desc}</p>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
       </div>
-
     </section>
-  )
+  );
 }
 
 export default Features;
