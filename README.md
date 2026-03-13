@@ -209,7 +209,7 @@ Add keys in `.env`.
 
 ## 🏗 System Architecture
 
-![Architecture](assets/architecture.png)
+![Architecture](assets/architecture.jpeg)
 
 ------------------------------------------------------------------------
 
