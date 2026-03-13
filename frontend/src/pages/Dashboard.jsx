@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import NotificationBell from "../components/NotificationBell";
 import AlertBanner from "../components/AlertBanner";
 import AppNavbar from "../components/AppNavbar";
+import Sidebar from "../components/Sidebar";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -21,116 +23,169 @@ function Dashboard() {
 
     <div className="min-h-screen bg-gray-50">
 
-      {/* Top Navbar */}
+      {/* Navbar */}
       <AppNavbar title="Dashboard" />
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="flex">
 
-        <AlertBanner />
+        {/* Sidebar */}
+        <Sidebar />
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        {/* Main Content */}
+        <div className="flex-1 p-10">
 
-          <h1 className="text-3xl font-bold">
-            Campus Air Dashboard
-          </h1>
+          <AlertBanner />
 
-          <NotificationBell />
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
 
-        </div>
+            <h1 className="text-3xl font-bold">
+              Campus Air Dashboard
+            </h1>
 
-        {/* User Profile */}
-        {user && (
-          <Card className="mb-8 shadow-sm">
+            <NotificationBell />
 
-            <CardContent className="flex items-center gap-6 p-6">
+          </div>
 
-              {user.profileImage && (
-                <img
-                  src={user.profileImage}
-                  alt="profile"
-                  className="w-16 h-16 rounded-full"
-                />
-              )}
+          {/* Welcome Card */}
+          {user && (
+            <Card className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
 
-              <div>
+              <CardContent className="p-6 flex justify-between items-center">
 
-                <h2 className="text-lg font-semibold">
-                  {user.name}
-                </h2>
+                <div>
 
-                <p className="text-gray-500">
-                  {user.email}
-                </p>
+                  <h2 className="text-xl font-semibold">
+                    Welcome back, {user.name}
+                  </h2>
 
-                <p className="text-sm mt-1 text-blue-600 font-medium">
-                  Role: {user.role}
-                </p>
+                  <p className="opacity-80 text-sm">
+                    Manage campus events, announcements, and alerts.
+                  </p>
 
-              </div>
+                </div>
 
-            </CardContent>
+                {user.profileImage && (
+                  <img
+                    src={user.profileImage}
+                    alt="profile"
+                    className="w-14 h-14 rounded-full border"
+                  />
+                )}
 
-          </Card>
-        )}
+              </CardContent>
 
-        {/* Dashboard Actions */}
-        <div className="grid md:grid-cols-3 gap-4">
-
-          {/* ADMIN CONTROLS */}
-          {user?.role?.toLowerCase() === "admin" && (
-            <>
-              <Link to="/create-event">
-                <Button className="w-full">Create Event</Button>
-              </Link>
-
-              <Link to="/create-announcement">
-                <Button className="w-full">Post Announcement</Button>
-              </Link>
-
-              <Link to="/create-alert">
-                <Button className="w-full">Send Alert</Button>
-              </Link>
-
-              <Link to="/upload-students">
-                <Button className="w-full">Upload Students</Button>
-              </Link>
-
-              <Link to="/students">
-                <Button className="w-full">Manage Students</Button>
-              </Link>
-
-              <Link to="/analytics">
-                <Button className="w-full">View Analytics</Button>
-              </Link>
-            </>
+            </Card>
           )}
 
-          {/* COMMON FEATURES */}
-          <Link to="/events">
-            <Button variant="secondary" className="w-full">
-              View Events
-            </Button>
-          </Link>
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-          <Link to="/announcements">
-            <Button variant="secondary" className="w-full">
-              View Announcements
-            </Button>
-          </Link>
+            <Card className="shadow-sm">
+              <CardContent className="p-6">
+                <p className="text-gray-500 text-sm">
+                  Total Events
+                </p>
+                <h3 className="text-2xl font-bold mt-2">
+                  12
+                </h3>
+              </CardContent>
+            </Card>
 
-          <Link to="/calendar">
-            <Button variant="secondary" className="w-full">
-              Event Calendar
-            </Button>
-          </Link>
+            <Card className="shadow-sm">
+              <CardContent className="p-6">
+                <p className="text-gray-500 text-sm">
+                  Announcements
+                </p>
+                <h3 className="text-2xl font-bold mt-2">
+                  8
+                </h3>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm">
+              <CardContent className="p-6">
+                <p className="text-gray-500 text-sm">
+                  Students
+                </p>
+                <h3 className="text-2xl font-bold mt-2">
+                  150
+                </h3>
+              </CardContent>
+            </Card>
+
+          </div>
+
+          {/* Dashboard Actions */}
+          <div className="grid md:grid-cols-3 gap-6">
+
+            {/* ADMIN CONTROLS */}
+            {user?.role?.toLowerCase() === "admin" && (
+              <>
+                <Link to="/create-event">
+                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                    Create Event
+                  </Button>
+                </Link>
+
+                <Link to="/create-announcement">
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                    Post Announcement
+                  </Button>
+                </Link>
+
+                <Link to="/create-alert">
+                  <Button className="w-full bg-red-600 hover:bg-red-700">
+                    Send Alert
+                  </Button>
+                </Link>
+
+                <Link to="/upload-students">
+                  <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                    Upload Students
+                  </Button>
+                </Link>
+
+                <Link to="/students">
+                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                    Manage Students
+                  </Button>
+                </Link>
+
+                <Link to="/analytics">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    View Analytics
+                  </Button>
+                </Link>
+              </>
+            )}
+
+            {/* COMMON FEATURES */}
+            <Link to="/events">
+              <Button variant="secondary" className="w-full">
+                View Events
+              </Button>
+            </Link>
+
+            <Link to="/announcements">
+              <Button variant="secondary" className="w-full">
+                View Announcements
+              </Button>
+            </Link>
+
+            <Link to="/calendar">
+              <Button variant="secondary" className="w-full">
+                Event Calendar
+              </Button>
+            </Link>
+
+          </div>
 
         </div>
 
       </div>
 
     </div>
-
   );
 }
 

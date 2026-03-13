@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config";
+
 function Login() {
 
   const handleGoogleLogin = () => {
-    window.open("https://campus-air.onrender.com/auth/google", "_self");
+    window.open(`${API_BASE_URL}/auth/google`, "_self");
   };
 
   return (

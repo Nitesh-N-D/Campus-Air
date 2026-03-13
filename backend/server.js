@@ -19,15 +19,17 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://campus-air.vercel.app"
+];
 
 connectDB();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://campus-air.vercel.app"
-    ],
+    origin: allowedOrigins,
     credentials: true
   })
 );
@@ -39,10 +41,10 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-   cookie: {
-  secure: true,
-  sameSite: "none"
-}
+    cookie: {
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax"
+    }
   })
 );
 
@@ -67,10 +69,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://campus-air.vercel.app"
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true
   }

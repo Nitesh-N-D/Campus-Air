@@ -2,24 +2,18 @@ import { useNavigate } from "react-router-dom"
 import { ArrowLeft, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import NotificationBell from "./NotificationBell"
-import API from "../services/api"
+import { logoutUser } from "../services/logout"
 
 function AppNavbar({ title }) {
 
   const navigate = useNavigate()
 
   const handleLogout = async () => {
-
     try {
-
-      await API.get("/auth/logout")
-
-      window.location.href = "/"
-
+      await logoutUser()
     } catch (err) {
-      console.log(err)
+      console.error("Logout failed:", err)
     }
-
   }
 
   return (
