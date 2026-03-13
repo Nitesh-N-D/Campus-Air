@@ -16,6 +16,8 @@ Campus Air is designed to streamline communication between
 **administrators and students** through a centralized dashboard with
 **real‑time updates, email alerts, and analytics**.
 
+Campus-Air is a dynamic campus communication platform designed to keep students updated. It allows administrators to publish urgent alerts, important announcements, and event schedules, which students can access through a modern web interface. The system ensures secure user authentication, delivers real-time updates, and leverages external services for features like email notifications and image hosting.
+
 ------------------------------------------------------------------------
 
 # 🌐 Live Architecture
