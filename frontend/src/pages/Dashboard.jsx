@@ -3,6 +3,9 @@ import API from "../services/api";
 import { Link } from "react-router-dom";
 import NotificationBell from "../components/NotificationBell";
 import AlertBanner from "../components/AlertBanner";
+import AppNavbar from "../components/AppNavbar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 function Dashboard() {
 
@@ -15,115 +18,119 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="p-10">
-      <AlertBanner />
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
 
-        <h1 className="text-3xl font-bold">
-          Campus Air Dashboard
-        </h1>
+    <div className="min-h-screen bg-gray-50">
 
-        <NotificationBell />
+      {/* Top Navbar */}
+      <AppNavbar title="Dashboard" />
 
-      </div>
+      <div className="max-w-6xl mx-auto px-6 py-8">
 
-      {/* User Profile */}
-      {user && (
-        <div className="bg-white p-6 rounded shadow mb-8 w-72">
+        <AlertBanner />
 
-          {user.profileImage && (
-            <img
-              src={user.profileImage}
-              alt="profile"
-              className="w-20 h-20 rounded-full"
-            />
-          )}
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
 
-          <h2 className="text-xl mt-4 font-semibold">
-            {user.name}
-          </h2>
+          <h1 className="text-3xl font-bold">
+            Campus Air Dashboard
+          </h1>
 
-          <p className="text-gray-600">
-            {user.email}
-          </p>
-
-          <p className="text-sm mt-2 text-blue-600 font-semibold">
-            Role: {user.role}
-          </p>
+          <NotificationBell />
 
         </div>
-      )}
 
-      {/* Dashboard Buttons */}
-      <div className="flex flex-wrap gap-4 mt-6">
+        {/* User Profile */}
+        {user && (
+          <Card className="mb-8 shadow-sm">
 
-        {/* ADMIN CONTROLS */}
-      {user?.role?.toLowerCase() === "admin" && (
-          <>
-            <Link
-              to="/create-event"
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-            >
-              Create Event
-            </Link>
+            <CardContent className="flex items-center gap-6 p-6">
 
-            <Link
-              to="/create-announcement"
-              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
-            >
-              Post Announcement
-            </Link>
-            <Link
-              to="/create-alert"
-              className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700"
-            >
-              Send Alert
-            </Link>
-            <Link
-              to="/upload-students"
-              className="bg-orange-600 text-white px-6 py-2 rounded hover:bg-orange-700"
-            >
-              Upload Students
-            </Link>
-            <Link
-    to="/students"
-    className="bg-indigo-600 text-white px-6 py-2 rounded"
-  >
-    Manage Students
-  </Link>
-  <Link
-  to="/analytics"
-  className="bg-indigo-600 text-white px-6 py-2 rounded"
->
-  View Analytics
-</Link>
-          </>
+              {user.profileImage && (
+                <img
+                  src={user.profileImage}
+                  alt="profile"
+                  className="w-16 h-16 rounded-full"
+                />
+              )}
+
+              <div>
+
+                <h2 className="text-lg font-semibold">
+                  {user.name}
+                </h2>
+
+                <p className="text-gray-500">
+                  {user.email}
+                </p>
+
+                <p className="text-sm mt-1 text-blue-600 font-medium">
+                  Role: {user.role}
+                </p>
+
+              </div>
+
+            </CardContent>
+
+          </Card>
         )}
 
-        {/* COMMON FEATURES */}
-        <Link
-          to="/events"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-        >
-          View Events
-        </Link>
+        {/* Dashboard Actions */}
+        <div className="grid md:grid-cols-3 gap-4">
 
-        <Link
-          to="/announcements"
-          className="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800"
-        >
-          View Announcements
-        </Link>
-        <Link
-  to="/calendar"
-  className="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700"
->
-  Event Calendar
-</Link>
+          {/* ADMIN CONTROLS */}
+          {user?.role?.toLowerCase() === "admin" && (
+            <>
+              <Link to="/create-event">
+                <Button className="w-full">Create Event</Button>
+              </Link>
+
+              <Link to="/create-announcement">
+                <Button className="w-full">Post Announcement</Button>
+              </Link>
+
+              <Link to="/create-alert">
+                <Button className="w-full">Send Alert</Button>
+              </Link>
+
+              <Link to="/upload-students">
+                <Button className="w-full">Upload Students</Button>
+              </Link>
+
+              <Link to="/students">
+                <Button className="w-full">Manage Students</Button>
+              </Link>
+
+              <Link to="/analytics">
+                <Button className="w-full">View Analytics</Button>
+              </Link>
+            </>
+          )}
+
+          {/* COMMON FEATURES */}
+          <Link to="/events">
+            <Button variant="secondary" className="w-full">
+              View Events
+            </Button>
+          </Link>
+
+          <Link to="/announcements">
+            <Button variant="secondary" className="w-full">
+              View Announcements
+            </Button>
+          </Link>
+
+          <Link to="/calendar">
+            <Button variant="secondary" className="w-full">
+              Event Calendar
+            </Button>
+          </Link>
+
+        </div>
+
       </div>
 
     </div>
+
   );
 }
 

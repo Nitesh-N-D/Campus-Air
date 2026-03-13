@@ -97,3 +97,6 @@
 .animate-slideDown {
   animation: slideDown 0.4s ease-out;
 }
+.dashboard-btn{
+  @apply bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition flex items-center justify-center font-medium;
+}
