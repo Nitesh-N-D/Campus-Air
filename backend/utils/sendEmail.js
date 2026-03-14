@@ -1,6 +1,15 @@
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET,
+  "https://developers.google.com/oauthplayground"
+);
+
+oAuth2Client.setCredentials({
+  refresh_token: process.env.GMAIL_REFRESH_TOKEN
+});
 
 function normalizeRecipients(to) {
   const recipients = Array.isArray(to) ? to : [to];
@@ -8,14 +17,12 @@ function normalizeRecipients(to) {
   return [...new Set(
     recipients
       .flatMap((recipient) => `${recipient}`.split(","))
-      .map((recipient) => recipient.trim().toLowerCase())
+      .map((recipient) => recipient.trim())
       .filter(Boolean)
   )];
 }
 
 const sendEmail = async (to, subject, text, html) => {
-
-  console.log("Using Resend email service");
 
   const recipients = normalizeRecipients(to);
 
@@ -25,21 +32,33 @@ const sendEmail = async (to, subject, text, html) => {
 
   try {
 
-    const response = await resend.emails.send({
-      from: process.env.EMAIL_FROM,
+    const accessToken = await oAuth2Client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_USER,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+        accessToken: accessToken.token
+      }
+    });
+
+    const info = await transporter.sendMail({
+      from: `Campus Air <${process.env.EMAIL_USER}>`,
       to: recipients,
       subject,
       text,
       html
     });
 
-    console.log("Email sent successfully:", response);
-
-    return response;
+    console.log("Email sent:", info.response);
 
   } catch (error) {
 
-    console.error("Resend email failed:", error);
+    console.error("Gmail API send failed:", error);
     throw error;
 
   }
