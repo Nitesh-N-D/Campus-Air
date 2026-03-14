@@ -1,18 +1,6 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  connectionTimeout: 60000,
-  greetingTimeout: 60000,
-  socketTimeout: 90000,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function normalizeRecipients(to) {
   const recipients = Array.isArray(to) ? to : [to];
@@ -26,32 +14,34 @@ function normalizeRecipients(to) {
 }
 
 const sendEmail = async (to, subject, text, html) => {
+
   const recipients = normalizeRecipients(to);
 
-  if (recipients.length === 0) {
+  if (!recipients.length) {
     throw new Error("No valid email recipients provided");
   }
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    subject,
-    text
-  };
+  try {
 
-  if (html) {
-    mailOptions.html = html;
+    const response = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
+      to: recipients,
+      subject: subject,
+      text: text,
+      html: html
+    });
+
+    console.log("Email sent:", response);
+
+    return response;
+
+  } catch (error) {
+
+    console.error("Email send failed:", error);
+    throw error;
+
   }
 
-  if (recipients.length === 1) {
-    mailOptions.to = recipients[0];
-  } else {
-    mailOptions.to = process.env.EMAIL_USER;
-    mailOptions.bcc = recipients;
-  }
-
-  const info = await transporter.sendMail(mailOptions);
-  console.log(`Email sent: ${info.response}`);
-  return info;
 };
 
 module.exports = sendEmail;
