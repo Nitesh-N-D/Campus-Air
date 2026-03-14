@@ -20,7 +20,8 @@ async function sendImportantEventEmail({ title, description, location, date }) {
   const emails = students
     .map((user) => user.email?.trim())
     .filter(Boolean);
-
+  console.log("Important event email triggered");
+  console.log("Student emails:", emails);
   if (emails.length === 0) {
     return;
   }

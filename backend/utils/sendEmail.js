@@ -26,6 +26,8 @@ const sendEmail = async (to, subject, text, html) => {
 
   const recipients = normalizeRecipients(to);
 
+  console.log("📧 Email recipients:", recipients);
+
   if (!recipients.length) {
     throw new Error("No valid email recipients provided");
   }
@@ -46,19 +48,22 @@ const sendEmail = async (to, subject, text, html) => {
       }
     });
 
-    const info = await transporter.sendMail({
+    const mailOptions = {
       from: `Campus Air <${process.env.EMAIL_USER}>`,
-      to: recipients,
+      to: process.env.EMAIL_USER, // sender receives a copy
+      bcc: recipients,            // send to all students safely
       subject,
       text,
       html
-    });
+    };
 
-    console.log("Email sent:", info.response);
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("✅ Email sent:", info.response);
 
   } catch (error) {
 
-    console.error("Gmail API send failed:", error);
+    console.error("❌ Gmail API send failed:", error);
     throw error;
 
   }
