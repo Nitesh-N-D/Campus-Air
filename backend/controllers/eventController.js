@@ -3,11 +3,55 @@ const sendEmail = require("../utils/sendEmail");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 
+function parseBoolean(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    return value.trim().toLowerCase() === "true";
+  }
+
+  return false;
+}
+
+async function sendImportantEventEmail({ title, description, location, date }) {
+  const students = await User.find({ role: "student" }).select("email");
+  const emails = students
+    .map((user) => user.email?.trim())
+    .filter(Boolean);
+
+  if (emails.length === 0) {
+    return;
+  }
+
+  await sendEmail(
+    emails,
+    `Important Event: ${title}`,
+    `A new important campus event has been posted.
+
+Title: ${title}
+
+Description:
+${description}
+
+Location: ${location}
+
+Date: ${date}`,
+    `<p>A new important campus event has been posted.</p>
+<p><strong>Title:</strong> ${title}</p>
+<p><strong>Description:</strong><br />${description}</p>
+<p><strong>Location:</strong> ${location}</p>
+<p><strong>Date:</strong> ${date}</p>`
+  );
+}
+
 exports.createEvent = async (req, res) => {
 
   try {
 
-    const { title, description, date, location, isImportant } = req.body;
+    const { title, description, date, location } = req.body;
+    const isImportant = parseBoolean(req.body.isImportant);
 
     const event = new Event({
       title,
@@ -38,38 +82,13 @@ exports.createEvent = async (req, res) => {
       });
     }
 
-    /* Send Email ONLY if Important */
+    res.status(201).json(event);
 
     if (isImportant) {
-
-      const students = await User.find({ role: "student" });
-
-      const emails = students.map(u => u.email);
-
-      if (emails.length > 0) {
-
-        await sendEmail(
-          emails,
-          `Important Event: ${title}`,
-          `
-A new important campus event has been posted.
-
-Title: ${title}
-
-Description:
-${description}
-
-Location: ${location}
-
-Date: ${date}
-`
-        );
-
-      }
-
+      sendImportantEventEmail({ title, description, location, date }).catch((error) => {
+        console.error("Failed to send important event email:", error);
+      });
     }
-
-    res.status(201).json(event);
 
   } catch (error) {
 
