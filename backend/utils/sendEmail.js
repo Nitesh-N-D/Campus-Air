@@ -15,6 +15,8 @@ function normalizeRecipients(to) {
 
 const sendEmail = async (to, subject, text, html) => {
 
+  console.log("Using Resend email service");
+
   const recipients = normalizeRecipients(to);
 
   if (!recipients.length) {
@@ -26,18 +28,18 @@ const sendEmail = async (to, subject, text, html) => {
     const response = await resend.emails.send({
       from: process.env.EMAIL_FROM,
       to: recipients,
-      subject: subject,
-      text: text,
-      html: html
+      subject,
+      text,
+      html
     });
 
-    console.log("Email sent:", response);
+    console.log("Email sent successfully:", response);
 
     return response;
 
   } catch (error) {
 
-    console.error("Email send failed:", error);
+    console.error("Resend email failed:", error);
     throw error;
 
   }
