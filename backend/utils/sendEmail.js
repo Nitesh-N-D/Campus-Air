@@ -1,4 +1,3 @@
-const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 
 const oAuth2Client = new google.auth.OAuth2(
@@ -34,32 +33,36 @@ const sendEmail = async (to, subject, text, html) => {
 
   try {
 
-    const accessToken = await oAuth2Client.getAccessToken();
+    const gmail = google.gmail({
+      version: "v1",
+      auth: oAuth2Client
+    });
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        type: "OAuth2",
-        user: process.env.EMAIL_USER,
-        clientId: process.env.GMAIL_CLIENT_ID,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-        accessToken: accessToken.token
+    const message = [
+      `From: Campus Air <${process.env.EMAIL_USER}>`,
+      `To: ${recipients.join(",")}`,
+      "Content-Type: text/html; charset=utf-8",
+      `Subject: ${subject}`,
+      "",
+      html || text
+    ].join("\n");
+
+    const encodedMessage = Buffer.from(message)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    const response = await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: encodedMessage
       }
     });
 
-    const mailOptions = {
-      from: `Campus Air <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // sender receives a copy
-      bcc: recipients,            // send to all students safely
-      subject,
-      text,
-      html
-    };
+    console.log("✅ Email sent successfully:", response.data.id);
 
-    const info = await transporter.sendMail(mailOptions);
-
-    console.log("✅ Email sent:", info.response);
+    return response.data;
 
   } catch (error) {
 
