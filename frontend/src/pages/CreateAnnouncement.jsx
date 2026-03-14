@@ -5,6 +5,7 @@ import AdminShell from "../components/AdminShell";
 import AccessNotice from "../components/AccessNotice";
 import useCurrentUser from "../hooks/useCurrentUser";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 function CreateAnnouncement() {
   const navigate = useNavigate();
@@ -46,10 +47,11 @@ function CreateAnnouncement() {
     try {
       setIsSubmitting(true);
       await API.post("/announcements/create", formData);
+      toast.success(isImportant ? "Announcement published and email delivery started." : "Announcement published successfully.");
       navigate("/announcements");
     } catch (submitError) {
       console.error(submitError);
-      setError(submitError?.response?.data || "Unable to publish the announcement right now.");
+      setError(submitError?.response?.data?.message || submitError?.response?.data || "Unable to publish the announcement right now.");
     } finally {
       setIsSubmitting(false);
     }

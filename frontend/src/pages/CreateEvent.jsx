@@ -5,6 +5,7 @@ import AdminShell from "../components/AdminShell";
 import AccessNotice from "../components/AccessNotice";
 import useCurrentUser from "../hooks/useCurrentUser";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 function CreateEvent() {
   const navigate = useNavigate();
@@ -52,10 +53,11 @@ function CreateEvent() {
     try {
       setIsSubmitting(true);
       await API.post("/events/create", formData);
+      toast.success(isImportant ? "Event published and email delivery started." : "Event published successfully.");
       navigate("/events");
     } catch (submitError) {
       console.error(submitError);
-      setError(submitError?.response?.data || "Unable to publish the event right now.");
+      setError(submitError?.response?.data?.message || submitError?.response?.data || "Unable to publish the event right now.");
     } finally {
       setIsSubmitting(false);
     }

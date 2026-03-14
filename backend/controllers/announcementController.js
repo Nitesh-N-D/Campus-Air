@@ -35,6 +35,7 @@ async function sendImportantAnnouncementEmail({ title, content }) {
 
 exports.createAnnouncement = async (req, res) => {
   try {
+    const authenticatedUser = req.authUser || req.user;
 
     const { title, content } = req.body;
     const isImportant = parseBoolean(req.body.isImportant);
@@ -44,7 +45,7 @@ exports.createAnnouncement = async (req, res) => {
       content,
       image: req.file ? req.file.path : "",
       isImportant,
-      createdBy: req.user ? req.user._id : null
+      createdBy: authenticatedUser ? authenticatedUser._id : null
     });
 
     await announcement.save();

@@ -49,6 +49,7 @@ Date: ${date}`,
 exports.createEvent = async (req, res) => {
 
   try {
+    const authenticatedUser = req.authUser || req.user;
 
     const { title, description, date, location } = req.body;
     const isImportant = parseBoolean(req.body.isImportant);
@@ -60,7 +61,7 @@ exports.createEvent = async (req, res) => {
       location,
       image: req.file ? req.file.path : "",
       isImportant,
-      createdBy: req.user ? req.user._id : null
+      createdBy: authenticatedUser ? authenticatedUser._id : null
     });
 
     await event.save();
