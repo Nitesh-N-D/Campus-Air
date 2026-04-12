@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { CalendarDays, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CalendarDays, Loader2, MapPin, Pencil, Trash2 } from "lucide-react";
 import API from "../services/api";
 import AdminShell from "../components/AdminShell";
 import EmptyState from "../components/EmptyState";
+import useCurrentUser from "../hooks/useCurrentUser";
+import { Button } from "@/components/ui/button";
 
 function Events() {
+  const navigate = useNavigate();
+  const { isAdmin } = useCurrentUser();
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState("");
 
   useEffect(() => {
     API.get("/events")
@@ -14,6 +20,25 @@ function Events() {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const handleDelete = async (eventId) => {
+    const shouldDelete = window.confirm("Delete this event permanently?");
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    try {
+      setDeleteId(eventId);
+      await API.delete(`/events/${eventId}`);
+      setEvents((currentEvents) => currentEvents.filter((event) => event._id !== eventId));
+    } catch (error) {
+      console.error(error);
+      window.alert(error?.response?.data?.message || "Unable to delete this event right now.");
+    } finally {
+      setDeleteId("");
+    }
+  };
 
   return (
     <AdminShell
@@ -69,6 +94,35 @@ function Events() {
                     {event.location}
                   </div>
                 </div>
+
+                {isAdmin ? (
+                  <div className="mt-6 grid gap-3 border-t border-slate-100 pt-5 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 rounded-2xl"
+                      onClick={() => navigate(`/edit-event/${event._id}`)}
+                    >
+                      <Pencil size={16} />
+                      Edit event
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 rounded-2xl border-rose-200 text-rose-700 hover:bg-rose-50 hover:text-rose-800"
+                      disabled={deleteId === event._id}
+                      onClick={() => handleDelete(event._id)}
+                    >
+                      {deleteId === event._id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                      Delete event
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             </article>
           ))}

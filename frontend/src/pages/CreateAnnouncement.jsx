@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 import AdminShell from "../components/AdminShell";
 import AccessNotice from "../components/AccessNotice";
@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 function CreateAnnouncement() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
   const { isAdmin, isLoading } = useCurrentUser();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -17,13 +19,39 @@ function CreateAnnouncement() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetching, setIsFetching] = useState(isEditMode);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      return;
+    }
+
+    API.get("/announcements")
+      .then((res) => {
+        const existingAnnouncement = (res.data || []).find((announcement) => announcement._id === id);
+
+        if (!existingAnnouncement) {
+          setError("Unable to find this announcement.");
+          return;
+        }
+
+        setTitle(existingAnnouncement.title || "");
+        setContent(existingAnnouncement.content || "");
+        setIsImportant(Boolean(existingAnnouncement.isImportant));
+      })
+      .catch((fetchError) => {
+        console.error(fetchError);
+        setError("Unable to load this announcement right now.");
+      })
+      .finally(() => setIsFetching(false));
+  }, [id, isEditMode]);
 
   const validateForm = () => {
     const nextErrors = {};
 
     if (!title.trim()) nextErrors.title = "Announcement title is required.";
     if (!content.trim()) nextErrors.content = "Announcement content is required.";
-    if (!image) nextErrors.image = "Please upload a cover image.";
+    if (!isEditMode && !image) nextErrors.image = "Please upload a cover image.";
 
     setFieldErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -46,8 +74,13 @@ function CreateAnnouncement() {
 
     try {
       setIsSubmitting(true);
-      await API.post("/announcements/create", formData);
-      toast.success(isImportant ? "Announcement published and email delivery started." : "Announcement published successfully.");
+      if (isEditMode) {
+        await API.put(`/announcements/${id}`, formData);
+        toast.success("Announcement updated successfully.");
+      } else {
+        await API.post("/announcements/create", formData);
+        toast.success(isImportant ? "Announcement published and email delivery started." : "Announcement published successfully.");
+      }
       navigate("/announcements");
     } catch (submitError) {
       console.error(submitError);
@@ -59,12 +92,18 @@ function CreateAnnouncement() {
 
   return (
     <AdminShell
-      title="Post Announcement"
+      title={isEditMode ? "Edit Announcement" : "Post Announcement"}
       eyebrow="Communication"
-      description="Write campus updates in a cleaner, production-level form with proper validation and clearer publishing feedback."
+      description={isEditMode
+        ? "Update announcement details from the same publishing workspace."
+        : "Write campus updates in a cleaner, production-level form with proper validation and clearer publishing feedback."}
     >
       {!isLoading && !isAdmin ? (
         <AccessNotice description="Only the approved admin Gmail accounts can publish announcements. Viewer accounts can still read announcement pages normally." />
+      ) : isFetching ? (
+        <section className="page-section">
+          <p className="text-sm text-slate-500">Loading announcement details...</p>
+        </section>
       ) : (
         <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <form onSubmit={handleSubmit} className="page-section space-y-5">
@@ -104,6 +143,7 @@ function CreateAnnouncement() {
                 className={`premium-input file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white ${fieldErrors.image ? "border-rose-300 focus:ring-rose-100" : ""}`}
                 onChange={(e) => setImage(e.target.files[0])}
               />
+              {isEditMode ? <p className="mt-2 text-xs text-slate-500">Leave this empty to keep the current cover image.</p> : null}
               {fieldErrors.image ? <p className="mt-2 text-xs text-rose-600">{fieldErrors.image}</p> : null}
             </div>
 
@@ -118,7 +158,7 @@ function CreateAnnouncement() {
             </label>
 
             <Button className="h-12 rounded-2xl px-6 text-sm font-semibold" disabled={isSubmitting}>
-              {isSubmitting ? "Publishing..." : "Publish announcement"}
+              {isSubmitting ? (isEditMode ? "Saving..." : "Publishing...") : (isEditMode ? "Save changes" : "Publish announcement")}
             </Button>
           </form>
 

@@ -5,6 +5,15 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
+      required: true,
+      minlength: 3,
+    },
+    course: {
+      type: String,
+      trim: true,
+      required: function requiredCourse() {
+        return this.authProvider === "local";
+      },
     },
     email: {
       type: String,

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { Megaphone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Loader2, Megaphone, Pencil, Trash2 } from "lucide-react";
 import API from "../services/api";
 import AdminShell from "../components/AdminShell";
 import EmptyState from "../components/EmptyState";
+import useCurrentUser from "../hooks/useCurrentUser";
+import { Button } from "@/components/ui/button";
 
 function Announcements() {
+  const navigate = useNavigate();
+  const { isAdmin } = useCurrentUser();
   const [announcements, setAnnouncements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState("");
 
   useEffect(() => {
     API.get("/announcements")
@@ -14,6 +20,27 @@ function Announcements() {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const handleDelete = async (announcementId) => {
+    const shouldDelete = window.confirm("Delete this announcement permanently?");
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    try {
+      setDeleteId(announcementId);
+      await API.delete(`/announcements/${announcementId}`);
+      setAnnouncements((currentAnnouncements) =>
+        currentAnnouncements.filter((announcement) => announcement._id !== announcementId)
+      );
+    } catch (error) {
+      console.error(error);
+      window.alert(error?.response?.data?.message || "Unable to delete this announcement right now.");
+    } finally {
+      setDeleteId("");
+    }
+  };
 
   return (
     <AdminShell
@@ -60,6 +87,35 @@ function Announcements() {
                 <p className="mt-4 max-w-4xl text-sm leading-8 text-slate-600">
                   {announcement.content}
                 </p>
+
+                {isAdmin ? (
+                  <div className="mt-6 grid gap-3 border-t border-slate-100 pt-5 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 rounded-2xl"
+                      onClick={() => navigate(`/edit-announcement/${announcement._id}`)}
+                    >
+                      <Pencil size={16} />
+                      Edit announcement
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 rounded-2xl border-rose-200 text-rose-700 hover:bg-rose-50 hover:text-rose-800"
+                      disabled={deleteId === announcement._id}
+                      onClick={() => handleDelete(announcement._id)}
+                    >
+                      {deleteId === announcement._id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                      Delete announcement
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             </article>
           ))}

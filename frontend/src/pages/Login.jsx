@@ -5,6 +5,7 @@ import API from "../services/api";
 import { API_BASE_URL } from "../config";
 import AuthForm from "../components/AuthForm";
 import { Button } from "@/components/ui/button";
+import { getAuthEmailValidationMessage, isAnnaUniversityEmail } from "../utils/authValidation";
 
 function Login() {
   const navigate = useNavigate();
@@ -28,6 +29,11 @@ function Login() {
 
     if (!email.trim() || !password) {
       setError("Enter both email and password.");
+      return;
+    }
+
+    if (!isAnnaUniversityEmail(email)) {
+      setError(getAuthEmailValidationMessage());
       return;
     }
 
@@ -83,10 +89,13 @@ function Login() {
           <input
             type="email"
             className="premium-input"
-            placeholder="you@college.edu"
+            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <p className="mt-2 text-xs text-slate-500">
+            Sign in with your student email or a regular personal email.
+          </p>
         </div>
 
         <div>

@@ -1,17 +1,15 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
+const {
+  getRoleForEmail,
+} = require("./authConfig");
 const isProduction = process.env.NODE_ENV === "production";
 const apiUrl =
   process.env.API_URL ||
   (isProduction
     ? "https://campus-air.onrender.com"
     : "http://localhost:5000");
-
-const adminEmails = [
-  "niteshdwaraka@gmail.com",
-  "niteshnd2006@gmail.com",
-];
 
 passport.use(
   new GoogleStrategy(
@@ -31,8 +29,9 @@ passport.use(
           user = await User.create({
             googleId: profile.id,
             name: profile.displayName,
+            course: "Student",
             email,
-            role: adminEmails.includes(email) ? "admin" : "student",
+            role: getRoleForEmail(email),
             profileImage: profile.photos?.[0]?.value,
             authProvider: "google",
             emailVerified: true,
@@ -40,6 +39,7 @@ passport.use(
         } else {
           user.googleId = profile.id;
           user.name = user.name || profile.displayName;
+          user.course = user.course || "Student";
           user.profileImage = user.profileImage || profile.photos?.[0]?.value;
           user.authProvider = user.password ? user.authProvider : "google";
           user.emailVerified = true;

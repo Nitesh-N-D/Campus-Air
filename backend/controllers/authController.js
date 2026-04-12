@@ -3,6 +3,14 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
+const {
+  isAnnaUniversityEmail,
+  isValidCourse,
+} = require("../utils/authValidation");
+const {
+  getAuthEmailValidationMessage,
+  getRoleForEmail,
+} = require("../config/authConfig");
 
 const isProduction = process.env.NODE_ENV === "production";
 const clientUrl =
@@ -17,11 +25,6 @@ const apiUrl =
     : "http://localhost:5000");
 const jwtSecret = process.env.JWT_SECRET || process.env.SESSION_SECRET;
 const jwtExpire = process.env.JWT_EXPIRE || "7d";
-const adminEmails = [
-  "niteshdwaraka@gmail.com",
-  "niteshnd2006@gmail.com",
-];
-
 function signToken(user) {
   return jwt.sign(
     {
@@ -38,6 +41,7 @@ function sanitizeUser(user) {
   return {
     _id: user._id,
     name: user.name,
+    course: user.course,
     email: user.email,
     role: user.role,
     profileImage: user.profileImage,
@@ -53,17 +57,27 @@ function createTokenPair() {
 }
 
 async function signup(req, res) {
-  const { name, email, password } = req.body;
+  const { name, course, email, password } = req.body;
   const normalizedEmail = email?.trim().toLowerCase();
+  const trimmedName = name?.trim();
+  const trimmedCourse = course?.trim();
 
-  if (!name?.trim() || !normalizedEmail || !password) {
-    return res.status(400).json({ message: "Name, email, and password are required" });
+  if (!trimmedName || !trimmedCourse || !normalizedEmail || !password) {
+    return res.status(400).json({ message: "Name, course, email, and password are required" });
   }
 
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (trimmedName.length < 3) {
+    return res.status(400).json({ message: "Name must be at least 3 characters long" });
+  }
 
-  if (!validEmail.test(normalizedEmail)) {
-    return res.status(400).json({ message: "Please enter a valid email address" });
+  if (!isValidCourse(trimmedCourse)) {
+    return res.status(400).json({ message: "Course must contain only letters" });
+  }
+
+  if (!isAnnaUniversityEmail(normalizedEmail)) {
+    return res.status(400).json({
+      message: getAuthEmailValidationMessage(),
+    });
   }
 
   if (password.length < 8) {
@@ -80,11 +94,12 @@ async function signup(req, res) {
   const { rawToken, hashedToken } = createTokenPair();
 
   const user = await User.create({
-    name: name.trim(),
+    name: trimmedName,
+    course: trimmedCourse,
     email: normalizedEmail,
     password: hashedPassword,
     authProvider: "local",
-    role: adminEmails.includes(normalizedEmail) ? "admin" : "student",
+    role: getRoleForEmail(normalizedEmail),
     emailVerified: false,
     verificationToken: hashedToken,
     verificationTokenExpiry: new Date(Date.now() + 1000 * 60 * 60 * 24),
@@ -111,6 +126,12 @@ async function login(req, res) {
 
   if (!normalizedEmail || !password) {
     return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  if (!isAnnaUniversityEmail(normalizedEmail)) {
+    return res.status(400).json({
+      message: getAuthEmailValidationMessage(),
+    });
   }
 
   const user = await User.findOne({ email: normalizedEmail });

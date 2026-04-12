@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 import AdminShell from "../components/AdminShell";
 import AccessNotice from "../components/AccessNotice";
@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 function CreateEvent() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
   const { isAdmin, isLoading } = useCurrentUser();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -19,6 +21,34 @@ function CreateEvent() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetching, setIsFetching] = useState(isEditMode);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      return;
+    }
+
+    API.get("/events")
+      .then((res) => {
+        const existingEvent = (res.data || []).find((event) => event._id === id);
+
+        if (!existingEvent) {
+          setError("Unable to find this event.");
+          return;
+        }
+
+        setTitle(existingEvent.title || "");
+        setDescription(existingEvent.description || "");
+        setDate(existingEvent.date ? new Date(existingEvent.date).toISOString().split("T")[0] : "");
+        setLocation(existingEvent.location || "");
+        setIsImportant(Boolean(existingEvent.isImportant));
+      })
+      .catch((fetchError) => {
+        console.error(fetchError);
+        setError("Unable to load this event right now.");
+      })
+      .finally(() => setIsFetching(false));
+  }, [id, isEditMode]);
 
   const validateForm = () => {
     const nextErrors = {};
@@ -27,7 +57,7 @@ function CreateEvent() {
     if (!description.trim()) nextErrors.description = "Description is required.";
     if (!date) nextErrors.date = "Event date is required.";
     if (!location.trim()) nextErrors.location = "Location is required.";
-    if (!image) nextErrors.image = "Please upload an event image.";
+    if (!isEditMode && !image) nextErrors.image = "Please upload an event image.";
 
     setFieldErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -52,8 +82,13 @@ function CreateEvent() {
 
     try {
       setIsSubmitting(true);
-      await API.post("/events/create", formData);
-      toast.success(isImportant ? "Event published and email delivery started." : "Event published successfully.");
+      if (isEditMode) {
+        await API.put(`/events/${id}`, formData);
+        toast.success("Event updated successfully.");
+      } else {
+        await API.post("/events/create", formData);
+        toast.success(isImportant ? "Event published and email delivery started." : "Event published successfully.");
+      }
       navigate("/events");
     } catch (submitError) {
       console.error(submitError);
@@ -65,12 +100,18 @@ function CreateEvent() {
 
   return (
     <AdminShell
-      title="Create Event"
+      title={isEditMode ? "Edit Event" : "Create Event"}
       eyebrow="Publishing"
-      description="Craft a polished event listing with strong hierarchy, validation, and a production-ready publishing experience."
+      description={isEditMode
+        ? "Update event details from the same publishing workspace."
+        : "Craft a polished event listing with strong hierarchy, validation, and a production-ready publishing experience."}
     >
       {!isLoading && !isAdmin ? (
         <AccessNotice description="Only the approved admin Gmail accounts can publish new events. Viewer accounts can still browse event listings and announcements." />
+      ) : isFetching ? (
+        <section className="page-section">
+          <p className="text-sm text-slate-500">Loading event details...</p>
+        </section>
       ) : (
         <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <form onSubmit={handleSubmit} className="page-section space-y-5">
@@ -135,6 +176,7 @@ function CreateEvent() {
                 className={`premium-input file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white ${fieldErrors.image ? "border-rose-300 focus:ring-rose-100" : ""}`}
                 onChange={(e) => setImage(e.target.files[0])}
               />
+              {isEditMode ? <p className="mt-2 text-xs text-slate-500">Leave this empty to keep the current event image.</p> : null}
               {fieldErrors.image ? <p className="mt-2 text-xs text-rose-600">{fieldErrors.image}</p> : null}
             </div>
 
@@ -149,7 +191,7 @@ function CreateEvent() {
             </label>
 
             <Button className="h-12 rounded-2xl px-6 text-sm font-semibold" disabled={isSubmitting}>
-              {isSubmitting ? "Publishing..." : "Publish event"}
+              {isSubmitting ? (isEditMode ? "Saving..." : "Publishing...") : (isEditMode ? "Save changes" : "Publish event")}
             </Button>
           </form>
 

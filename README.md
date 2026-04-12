@@ -145,6 +145,7 @@ Campus-Air is a dynamic campus communication platform designed to keep students 
 
     SESSION_SECRET=
     JWT_SECRET=
+    API_URL=http://localhost:5000
 
     CLOUD_NAME=
     CLOUD_API_KEY=
@@ -154,10 +155,13 @@ Campus-Air is a dynamic campus communication platform designed to keep students 
     EMAIL_PASS=
 
     CLIENT_URL=http://localhost:5173
+    ADMIN_EMAILS=2024503529@student.annauniv.edu
+    DEV_ALLOWED_EMAILS=niteshdwaraka@gmail.com,niteshnd2006@gmail.com
 
 ### Frontend `.env`
 
     VITE_API_URL=http://localhost:5000
+    VITE_DEV_ALLOWED_EMAILS=niteshdwaraka@gmail.com,niteshnd2006@gmail.com
 
 ------------------------------------------------------------------------
 

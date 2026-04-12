@@ -5,11 +5,17 @@ import API from "../services/api";
 import { API_BASE_URL } from "../config";
 import AuthForm from "../components/AuthForm";
 import { Button } from "@/components/ui/button";
+import {
+  getAuthEmailValidationMessage,
+  isAnnaUniversityEmail,
+  isValidCourse,
+} from "../utils/authValidation";
 
 function Signup() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
+    course: "",
     email: "",
     password: "",
   });
@@ -27,8 +33,23 @@ function Signup() {
     setError("");
     setSuccess("");
 
-    if (!form.name.trim() || !form.email.trim() || !form.password) {
+    if (!form.name.trim() || !form.course.trim() || !form.email.trim() || !form.password) {
       setError("Fill in all fields before creating your account.");
+      return;
+    }
+
+    if (form.name.trim().length < 3) {
+      setError("Name must be at least 3 characters long.");
+      return;
+    }
+
+    if (!isValidCourse(form.course)) {
+      setError("Course must contain only letters.");
+      return;
+    }
+
+    if (!isAnnaUniversityEmail(form.email)) {
+      setError(getAuthEmailValidationMessage());
       return;
     }
 
@@ -79,9 +100,20 @@ function Signup() {
           <input
             type="text"
             className="premium-input"
-            placeholder="Nitesh D"
+            placeholder="Arun Kumar"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium text-slate-700">Course</label>
+          <input
+            type="text"
+            className="premium-input"
+            placeholder="CSE"
+            value={form.course}
+            onChange={(e) => setForm({ ...form, course: e.target.value })}
           />
         </div>
 
@@ -90,10 +122,19 @@ function Signup() {
           <input
             type="email"
             className="premium-input"
-            placeholder="you@college.edu"
+            placeholder="xxxxxxxxxx@student.annauniv.edu"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
+          <p className="mt-2 text-xs text-slate-500">
+            You can use your student email or a regular personal email.
+            {" "}
+            <span className="font-medium">xxxxxxxxxx@student.annauniv.edu</span>
+            {" "}
+            or
+            {" "}
+            <span className="font-medium">name@example.com</span>.
+          </p>
         </div>
 
         <div>

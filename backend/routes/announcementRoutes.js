@@ -5,9 +5,13 @@ const upload = require("../utils/cloudinaryStorage");
 
 const {
   createAnnouncement,
-  getAnnouncements
+  deleteAnnouncement,
+  getAnnouncements,
+  updateAnnouncement
 } = require("../controllers/announcementController");
 router.post("/create", isAdmin, upload.single("image"), createAnnouncement);
+router.put("/:id", isAdmin, upload.single("image"), updateAnnouncement);
+router.delete("/:id", isAdmin, deleteAnnouncement);
 router.get("/", getAnnouncements);
 
 module.exports = router;

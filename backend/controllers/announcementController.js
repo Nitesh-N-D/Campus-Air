@@ -90,3 +90,46 @@ exports.getAnnouncements = async (req, res) => {
   res.json(announcements);
 
 };
+
+exports.deleteAnnouncement = async (req, res) => {
+  try {
+    const deletedAnnouncement = await Announcement.findByIdAndDelete(req.params.id);
+
+    if (!deletedAnnouncement) {
+      return res.status(404).json({ message: "Announcement not found" });
+    }
+
+    return res.status(200).json({ message: "Announcement deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error deleting announcement" });
+  }
+};
+
+exports.updateAnnouncement = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const isImportant = parseBoolean(req.body.isImportant);
+
+    const existingAnnouncement = await Announcement.findById(req.params.id);
+
+    if (!existingAnnouncement) {
+      return res.status(404).json({ message: "Announcement not found" });
+    }
+
+    existingAnnouncement.title = title;
+    existingAnnouncement.content = content;
+    existingAnnouncement.isImportant = isImportant;
+
+    if (req.file) {
+      existingAnnouncement.image = req.file.path;
+    }
+
+    await existingAnnouncement.save();
+
+    return res.status(200).json(existingAnnouncement);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error updating announcement" });
+  }
+};

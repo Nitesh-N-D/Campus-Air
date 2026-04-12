@@ -101,6 +101,41 @@ exports.createEvent = async (req, res) => {
 
 };
 
+exports.updateEvent = async (req, res) => {
+
+  try {
+    const { title, description, date, location } = req.body;
+    const isImportant = parseBoolean(req.body.isImportant);
+
+    const existingEvent = await Event.findById(req.params.id);
+
+    if (!existingEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    existingEvent.title = title;
+    existingEvent.description = description;
+    existingEvent.date = date;
+    existingEvent.location = location;
+    existingEvent.isImportant = isImportant;
+
+    if (req.file) {
+      existingEvent.image = req.file.path;
+    }
+
+    await existingEvent.save();
+
+    return res.status(200).json(existingEvent);
+
+  } catch (error) {
+
+    console.error(error);
+    return res.status(500).json({ message: "Error updating event" });
+
+  }
+
+};
+
 
 exports.getEvents = async (req, res) => {
 
@@ -116,6 +151,27 @@ exports.getEvents = async (req, res) => {
 
     console.error(error);
     res.status(500).json({ message: "Error fetching events" });
+
+  }
+
+};
+
+exports.deleteEvent = async (req, res) => {
+
+  try {
+
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+
+    if (!deletedEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    return res.status(200).json({ message: "Event deleted successfully" });
+
+  } catch (error) {
+
+    console.error(error);
+    return res.status(500).json({ message: "Error deleting event" });
 
   }
 

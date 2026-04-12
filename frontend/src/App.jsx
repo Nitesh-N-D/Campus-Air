@@ -46,9 +46,11 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
+        <Route path="/edit-event/:id" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
         <Route path="/upload-students" element={<ProtectedRoute><UploadStudents /></ProtectedRoute>} />
         <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/create-announcement" element={<ProtectedRoute><CreateAnnouncement /></ProtectedRoute>} />
+        <Route path="/edit-announcement/:id" element={<ProtectedRoute><CreateAnnouncement /></ProtectedRoute>} />
         <Route path="/create-alert" element={<ProtectedRoute><CreateAlert /></ProtectedRoute>} />
         <Route path="/announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
         <Route path="/students" element={<ProtectedRoute><Students /></ProtectedRoute>} />
