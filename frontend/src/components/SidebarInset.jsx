@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, X } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import Sidebar from "./Sidebar";
 import useCurrentUser from "../hooks/useCurrentUser";
@@ -86,7 +86,7 @@ function SidebarInset({ title, eyebrow, description, actions, children }) {
                     <NotificationBell />
 
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="rounded-2xl border border-slate-200 bg-white p-1 shadow-sm transition hover:shadow-md">
+                      <DropdownMenuTrigger className="rounded-full border border-slate-200 bg-white p-1 shadow-sm transition hover:shadow-md">
                         <div className="flex items-center gap-3 px-2 py-1">
                           <Avatar className="h-10 w-10">
                             {user?.profileImage ? (
@@ -115,21 +115,62 @@ function SidebarInset({ title, eyebrow, description, actions, children }) {
                         </div>
                       </DropdownMenuTrigger>
 
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Account</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-                          Dashboard
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(-1)}>
-                          Back
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate("/")}>
-                          Home
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => logoutUser()}>
-                          Logout
-                        </DropdownMenuItem>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-72 p-0 sm:w-80"
+                      >
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-11 w-11">
+                              {user?.profileImage ? (
+                                <AvatarImage src={user.profileImage} alt={user?.name || "User"} />
+                              ) : null}
+                              <AvatarFallback>
+                                {user?.name?.[0] || "C"}
+                              </AvatarFallback>
+                            </Avatar>
+
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-slate-900">
+                                {isLoading ? "Loading..." : user?.name || "Campus Air"}
+                              </p>
+                              <p className="truncate text-xs text-slate-500">
+                                {user?.email || "Workspace account"}
+                              </p>
+                              {user?.role ? (
+                                <Badge variant="outline" className="mt-2 text-[10px] uppercase tracking-[0.18em]">
+                                  {user.role}
+                                </Badge>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <DropdownMenuSeparator className="my-4" />
+
+                          <DropdownMenuLabel className="px-1">Quick links</DropdownMenuLabel>
+                          <div className="mt-2 grid gap-1">
+                            <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                              Dashboard
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(-1)}>
+                              Back
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/")}>
+                              Home
+                            </DropdownMenuItem>
+                          </div>
+
+                          <DropdownMenuSeparator className="my-4" />
+
+                          <Button
+                            type="button"
+                            className="h-11 w-full rounded-2xl bg-rose-600 text-white hover:bg-rose-700"
+                            onClick={() => logoutUser()}
+                          >
+                            <LogOut size={16} />
+                            Logout
+                          </Button>
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
 

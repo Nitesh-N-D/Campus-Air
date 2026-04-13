@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Megaphone, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Megaphone, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import API from "../services/api";
 import AdminShell from "../components/AdminShell";
 import EmptyState from "../components/EmptyState";
 import useCurrentUser from "../hooks/useCurrentUser";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function Announcements() {
   const navigate = useNavigate();
@@ -89,31 +97,36 @@ function Announcements() {
                 </p>
 
                 {isAdmin ? (
-                  <div className="mt-6 grid gap-3 border-t border-slate-100 pt-5 sm:grid-cols-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-11 rounded-2xl"
-                      onClick={() => navigate(`/edit-announcement/${announcement._id}`)}
-                    >
-                      <Pencil size={16} />
-                      Edit announcement
-                    </Button>
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+                    <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                      Admin actions
+                    </div>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-11 rounded-2xl border-rose-200 text-rose-700 hover:bg-rose-50 hover:text-rose-800"
-                      disabled={deleteId === announcement._id}
-                      onClick={() => handleDelete(announcement._id)}
-                    >
-                      {deleteId === announcement._id ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Trash2 size={16} />
-                      )}
-                      Delete announcement
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                        Manage
+                        <MoreHorizontal size={16} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Announcement controls</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => navigate(`/edit-announcement/${announcement._id}`)}>
+                          <Pencil size={16} className="mr-2" />
+                          Edit announcement
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-rose-700 hover:bg-rose-50"
+                          onClick={() => handleDelete(announcement._id)}
+                        >
+                          {deleteId === announcement._id ? (
+                            <Loader2 size={16} className="mr-2 animate-spin" />
+                          ) : (
+                            <Trash2 size={16} className="mr-2" />
+                          )}
+                          Delete announcement
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 ) : null}
               </div>
